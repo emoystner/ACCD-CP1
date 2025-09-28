@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wild West Portfolio - Emma</title>
     <style>
-        body {
+           body {
             background-color: #ED6B2D;
             color: #D4D2D5;
             font-family: 'Georgia', 'Times New Roman', serif;
@@ -15,28 +15,91 @@
         
         h1 {
             text-align: center;
-            font-size: 2.5em;
+            font-size: 4.3em;
             margin-bottom: 20px;
         }
         
+        p {
+            font-size: 1.5em;
+            line-height: 1.6;
+            text-align: center;
+            margin: 20px;
+        }
+
+        /* Header section with badge and intro */
+        .header-section {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin: 50px 0;
+        }
+
+        .sheriff-intro {
+            font-weight: bold;
+            font-size: 1.5em;
+            flex: 1;
+        }
+
+        .badge {
+            width: 300px;
+            height: auto;
+            flex-shrink: 0;
+        }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             padding: 30px;
         }
-        .badge {
-            float: right;
-            width: 100px; /* adjust size as needed */
+
+        .westernguns {
+            display: block;
+            margin: 20px auto;
+            width: auto;
             height: auto;
-            margin-left: 20px;
-}
+            max-width: 100%;
+        }
+         @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .sheriff-intro {
+                order: 2;
+                text-align: center;
+            }
+            
+            .badge {
+                order: 1;
+                width: 200px;
+                align-content: center;
+            }
+            
+            h1 {
+                font-size: 3em;
+            }
+            
+            p {
+                font-size: 1.2em;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Wild West Web</h1>
-        <p>Howdy partner, welcome to the Wild West Web! My name is Emma. Sheriff, mayor, and only citizen of this site.</p>
         <img src="badge.gif" alt="Sheriff Badge" class="badge">
+        <p class="sheriff-intro">Howdy partner, welcome to the Wild West Web! My name is Emma. Sheriff, mayor, and only citizen of this site.</p>
+        <p>*pew* *pew*</p>
+        <imd src="westernguns.gif" alt="Western Guns" class="westernguns">
+        <p>Hold it partner, before you get trigger happy here let me tell you a bit about me.
+            I'm still pretty new to these digital parts. Been wandering this design frontier for about 3 years now, learning the ropes - but I'm ready to conquer whatever challenge comes my way.
+            Currently studying interaction design at Art Center College of Design, picking up new skills and learning from the seasoned folks. I'm all about keeping it real and working toward human-centered solutions that actually connect with folks. No pretense here - just genuine enthusiasm for good design and the stories behind it.
+            I'm eager to learn and ready to wave my flag on any design challenge. Life's messy, but design should bring clarity to the chaos.
+            Currently hanging my hat in Chattanooga, TN, but like any good wanderer, I'm ready to mosey on to wherever the next great adventure calls
+        </p>
     </div>
 </body>
 </html>
