@@ -5,39 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wild West Portfolio - Emma</title>
     <style>
-           body {
+        body {
             background-color: #ED6B2D;
             color: #D4D2D5;
             font-family: 'Georgia', 'Times New Roman', serif;
             padding: 20px;
             margin: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
         
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        /* Navigation */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 40px 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            gap: 20px;
+        }
+
+        nav ul li {
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li a {
+            color: #D4D2D5;
+            text-decoration: none;
+            font-size: 1.2em;
+            padding: 10px 15px;
+            border: 2px solid #D4D2D5;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        nav ul li a:hover {
+            background-color: #D4D2D5;
+            color: #ED6B2D;
+        }
+        
+        /* Title */
         h1 {
             text-align: center;
             font-size: 4.3em;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
+            margin-top: 20px;
         }
         
-        p {
-            font-size: 1.5em;
-            line-height: 1.6;
-            text-align: center;
-            margin: 20px;
-        }
-
         /* Header section with badge and intro */
         .header-section {
             display: flex;
             align-items: flex-start;
-            gap: 20px;
+            gap: 40px;
             margin: 50px 0;
-        }
-
-        .sheriff-intro {
-            font-weight: bold;
-            font-size: 1.5em;
-            flex: 1;
         }
 
         .badge {
@@ -46,60 +77,180 @@
             flex-shrink: 0;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 30px;
+        .sheriff-intro {
+            font-weight: bold;
+            font-size: 1.5em;
+            flex: 1;
+            line-height: 1.4;
+        }
+        
+        /* Content paragraphs */
+        p {
+            font-size: 1.5em;
+            line-height: 1.6;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Gun container and styling */
+        .gun-container {
+            position: relative;
+            text-align: center;
+            margin: 40px auto;
         }
 
         .westernguns {
             display: block;
-            margin: 20px auto;
+            margin: 0 auto 10px auto;
             width: auto;
             height: auto;
             max-width: 100%;
         }
-         @media (max-width: 768px) {
+
+        .pew-text {
+            font-size: 1.5em;
+            margin: 0;
+            text-align: center;
+        }
+
+        /* Mobile (up to 767px) */
+        @media (max-width: 767px) {
+            .container {
+                padding: 15px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            nav ul li a {
+                display: block;
+                text-align: center;
+                font-size: 1.1em;
+            }
+            
+            h1 {
+                font-size: 2.5em;
+                margin-bottom: 30px;
+            }
+            
             .header-section {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-            }
-            
-            .sheriff-intro {
-                order: 2;
-                text-align: center;
+                gap: 30px;
             }
             
             .badge {
-                order: 1;
-                width: 200px;
-                align-content: center;
+                width: 250px;
+                max-width: 80%;
             }
             
-            h1 {
-                font-size: 3em;
+            .sheriff-intro {
+                font-size: 1.2em;
+                text-align: center;
             }
             
             p {
-                font-size: 1.2em;
+                font-size: 1.1em;
+                line-height: 1.5;
+                margin: 15px 0;
+            }
+        }
+
+        /* Tablet (768px to 1024px) */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .container {
+                padding: 20px;
+            }
+
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            nav ul li a {
+                font-size: 1.1em;
+            }
+            
+            h1 {
+                font-size: 3.5em;
+            }
+            
+            .header-section {
+                flex-direction: row;
+                align-items: center;
+                gap: 30px;
+            }
+            
+            .badge {
+                width: 250px;
+            }
+            
+            .sheriff-intro {
+                font-size: 1.3em;
+            }
+            
+            p {
+                font-size: 1.3em;
+            }
+        }
+
+        /* Desktop (1025px and up) - Original styles maintained */
+        @media (min-width: 1025px) {
+            .header-section {
+                flex-direction: row;
+            }
+            
+            .sheriff-intro {
+                text-align: left;
+            }
+            
+            .badge {
+                width: 300px;
+            }
+            
+            h1 {
+                font-size: 4.3em;
+            }
+            
+            p {
+                font-size: 1.5em;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <nav>
+            <ul>
+                <li><a href="#saloon">The Saloon</a></li>
+                <li><a href="#wanted">Wanted</a></li>
+                <li><a href="#testimonials">Townsfolk Testimonials</a></li>
+            </ul>
+        </nav>
+        
         <h1>Wild West Web</h1>
-        <img src="badge.gif" alt="Sheriff Badge" class="badge">
-        <p class="sheriff-intro">Howdy partner, welcome to the Wild West Web! My name is Emma. Sheriff, mayor, and only citizen of this site.</p>
-        <p>*pew* *pew*</p>
-        <imd src="westernguns.gif" alt="Western Guns" class="westernguns">
-        <p>Hold it partner, before you get trigger happy here let me tell you a bit about me.
-            I'm still pretty new to these digital parts. Been wandering this design frontier for about 3 years now, learning the ropes - but I'm ready to conquer whatever challenge comes my way.
-            Currently studying interaction design at Art Center College of Design, picking up new skills and learning from the seasoned folks. I'm all about keeping it real and working toward human-centered solutions that actually connect with folks. No pretense here - just genuine enthusiasm for good design and the stories behind it.
-            I'm eager to learn and ready to wave my flag on any design challenge. Life's messy, but design should bring clarity to the chaos.
-            Currently hanging my hat in Chattanooga, TN, but like any good wanderer, I'm ready to mosey on to wherever the next great adventure calls
-        </p>
+        
+        <div class="header-section">
+            <img src="badge.gif" alt="Sheriff Badge" class="badge">
+            <p class="sheriff-intro">Howdy partner, welcome to the Wild West Web! My name is Emma. Sheriff, mayor, and only citizen of this site.</p>
+        </div>
+        
+        <div class="gun-container">
+            <img src="westernguns.gif" alt="Western Guns" class="westernguns">
+            <p class="pew-text">*pew* *pew*</p>
+        </div>
+        
+        <p>Hold it partner, before you get trigger happy here let me tell you a bit about me.</p>
+        
+        <p>I'm still pretty new to these digital parts - been wandering this design frontier for about 3 years, learning the ropes but ready to conquer whatever challenge comes my way.</p>
+        
+        <p>Currently studying interaction design at Art Center College of Design. I'm all about keeping it real and creating human-centered solutions that actually connect with folks. No pretense here - just genuine enthusiasm for good design.</p>
+        
+        <p>Currently hanging my hat in Chattanooga, TN, but like any good wanderer, I'm ready to mosey on to wherever the next great adventure calls.</p>
     </div>
 </body>
 </html>
