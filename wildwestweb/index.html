@@ -22,7 +22,9 @@
             margin: 0 auto;
             padding: 30px;
         }
-        
+        .mobile-only {
+            display: none;
+        }
         /* Navigation */
         nav ul {
             list-style: none;
@@ -158,6 +160,16 @@
                 line-height: 1.5;
                 margin: 15px 0;
             }
+            body {
+                background-color: #6C698D;
+            }
+             .mobile-only {
+                display: block;
+                text-align: center; /* Optional: center the text */
+                font-size: 1.5rem; /* Optional: make it bigger */
+                margin: 20px 0; /* Optional: add some spacing */
+            }
+}
         }
 
         /* Tablet (768px to 1024px) */
@@ -213,7 +225,8 @@
             }
             
             h1 {
-                font-size: 4.3em;
+                font-size: 8.6em;
+                font-family: 'Rye', cursive;
             }
             
             p {
@@ -233,7 +246,7 @@
         </nav>
         
         <h1>Wild West Web</h1>
-        
+        <p class="mobile-only">👻 boo your phone is haunted</p>
         <div class="header-section">
             <img src="badge.gif" alt="Sheriff Badge" class="badge">
             <p class="sheriff-intro">Howdy partner, welcome to the Wild West Web! My name is Emma. Sheriff, mayor, and only citizen of this site.</p>
