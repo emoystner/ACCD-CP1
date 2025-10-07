@@ -1,30 +1,26 @@
-let cStage = document.getElementById("colorStage")
-let cButton = document.getElementById("colorButton")
+// Grab the existing elements by their IDs
+const cStage  = document.getElementById("colorStage");
+const cButton = document.getElementById("colorButton");
+const qImage  = document.getElementById("popeImage");
+const qButton = document.getElementById("imageToggle");
 
-const qImage = document.createElement("popeImage")
-const qButton = document.createElement("imageToggle")
-
-let changeColor = function() 
-{
-    let rComp = Math.random() * 255
-    let gComp = Math.random() * 255
-    let bComp = Math.random() * 255   
-
-
-    cStage.style.backgroundColor = "rgb(" + rComp + "," + gComp +"," + bComp +")"
+// Random background color
+function changeColor() {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  cStage.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 }
 
-let toggleImage = () =>
-{
-    console.log(qImage.src)
-    if(qImage.src.includes("pope1"))
-    { qImage.src = "images/pope2.webp" 
-    }
-    else 
-    { qImage.src = "images/pope1.webp" 
-    }
+// Swap between pope1.webp and pope2.webp
+function toggleImage() {
+  const src1 = "images/pope1.png";
+  const src2 = "images/pope2.webp";
+  const current = qImage.getAttribute("src") || src1;
+  qImage.setAttribute("src", current.includes("pope1") ? src2 : src1);
 }
 
-qButton.addEventListener("click", toggleImage)
-cButton.addEventListener("click", changeColor)
-window.addEventListener("load", changeColor)
+// Wire up events
+qButton.addEventListener("click", toggleImage);
+cButton.addEventListener("click", changeColor);
+window.addEventListener("load", changeColor);
