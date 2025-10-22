@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Dark Night of My Soul - 3D Watch Modeling Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 70%);
+            position: relative;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff6b6b, transparent);
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ff6b6b;
+            font-style: italic;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        /* Main Content Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Story Sections */
+        .story-section {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid #ff6b6b;
+            padding: 40px;
+            margin: 40px 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .story-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,107,107,0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .chapter-title {
+            font-size: 1.8rem;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .chapter-title::after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 2px;
+            background: #ff6b6b;
+            margin-top: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .story-section:hover .chapter-title::after {
+            width: 100px;
+        }
+
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #d4d4d4;
+            text-align: justify;
+        }
+
+        /* Image Section */
+        .image-container {
+            margin: 60px 0;
+            text-align: center;
+            padding: 40px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .image-caption {
+            margin-top: 20px;
+            font-style: italic;
+            color: #999;
+            font-size: 0.95rem;
+        }
+
+        /* Special styling for dream vs result images */
+        .image-container:first-of-type {
+            background: linear-gradient(135deg, rgba(255,107,107,0.1) 0%, rgba(0,0,0,0.3) 100%);
+        }
+
+        .image-container:last-of-type {
+            background: linear-gradient(135deg, rgba(107,255,107,0.1) 0%, rgba(0,0,0,0.3) 100%);
+            margin-bottom: 60px;
+        }
+
+        .image-container:last-of-type img {
+            box-shadow: 0 10px 30px rgba(107,255,107,0.3);
+        }
+
+        /* Special Sections */
+        .breakthrough {
+            background: linear-gradient(135deg, rgba(107,255,107,0.05) 0%, rgba(255,255,255,0.03) 100%);
+            border-left-color: #6bff6b;
+        }
+
+        .breakthrough .chapter-title {
+            color: #6bff6b;
+        }
+
+        .breakthrough .chapter-title::after {
+            background: #6bff6b;
+        }
+
+        /* Details List */
+        .struggle-list {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .struggle-list li {
+            margin: 15px 0;
+            position: relative;
+            list-style: none;
+        }
+
+        .struggle-list li::before {
+            content: "⚡";
+            position: absolute;
+            left: -25px;
+            color: #ff6b6b;
+        }
+
+        /* Link Styling */
+        .resource-link {
+            color: #6bff6b;
+            text-decoration: none;
+            border-bottom: 1px dotted #6bff6b;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .resource-link:hover {
+            color: #8fff8f;
+            border-bottom-style: solid;
+            transform: translateX(5px);
+        }
+
+        /* Epilogue */
+        .epilogue {
+            text-align: center;
+            padding: 60px 20px;
+            margin-top: 80px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .epilogue-text {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #ff6b6b;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .story-section {
+                padding: 25px;
+                margin: 20px 10px;
+            }
+            
+            h1 {
+                letter-spacing: 1px;
+            }
+            
+            .chapter-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>The Dark Night of My Soul</h1>
+        <p class="subtitle">The Tale of a Student Torturing Yourself by Trying Too Hard</p>
+    </header>
+
+    <div class="container">
+        <!-- Act I: The Beginning -->
+        <section class="story-section">
+            <h2 class="chapter-title">Act I: The Ambitious Beginning</h2>
+            <div class="story-text">
+                <p>The goal was simple, yet deceptively complex: create the perfect COROS 3D watch in Blender. 
+                Armed with determination and a real COROS watch on my wrist, I embarked on what would become 
+                an epic journey of self-discovery through the lens of 3D modeling.</p>
+                
+                <p>I started with the watch face—a task that filled me with genuine joy. Using the skills I had 
+                learned, I dove in headfirst, scaling, beveling, and expanding with the confidence of someone 
+                who had found their rhythm. Each vertex moved with purpose, each edge loop placed with intention. 
+                This was it—I was creating something from nothing, and it felt magnificent.</p>
+            </div>
+        </section>
+
+        <!-- The Dream Image -->
+        <div class="image-container">
+            <img src="thedream.png" alt="The Dream - Real COROS Watch">
+            <p class="image-caption">The Dream: My COROS companion and tormentor—the impossible standard</p>
+        </div>
+
+        <!-- Act II: The Descent -->
+        <section class="story-section">
+            <h2 class="chapter-title">Act II: The Descent into Button Hell</h2>
+            <div class="story-text">
+                <p>Then came the buttons.</p>
+                
+                <p>Oh, the buttons.</p>
+                
+                <p>My own COROS watch sat there on my wrist, mocking me with its intricate details. 
+                "Look at these perfectly crafted buttons," it seemed to whisper. "Look at the subtle 
+                bevels, the precise indentations, the way each detail catches the light."</p>
+                
+                <p>My attempts were nothing short of digital torture:</p>
+                
+                <ul class="struggle-list">
+                    <li>Adding objects to delete parts of the main object—a Boolean nightmare</li>
+                    <li>Hours spent tweaking, only to realize I'd made it worse</li>
+                    <li>The painful realization that sometimes, trying harder isn't the answer</li>
+                    <li>Abandoning the project for days, defeated but not broken</li>
+                </ul>
+                
+                <p>I gave up. Not once, but multiple times. Each return to the project brought the same 
+                result—no better, no closer to those perfect buttons that taunted me from my wrist.</p>
+            </div>
+        </section>
+
+        <!-- Act III: The Revelation -->
+        <section class="story-section breakthrough">
+            <h2 class="chapter-title">Act III: The Breakthrough</h2>
+            <div class="story-text">
+                <p>Then class came, and with it, a revelation that hit like lightning: I was trying too hard.</p>
+                
+                <p>Sometimes, the path to perfection isn't through suffering—it's through strategic resourcefulness. 
+                I discovered BlenderKit, and with it, a beautiful watch model that would become my salvation:</p>
+                
+                <a href="https://www.blenderkit.com/get-blenderkit/5dd052f0-1351-4aba-b0c4-50401fdac757/" 
+                   class="resource-link" target="_blank">
+                    The Model That Saved My Sanity →
+                </a>
+                
+                <p>With surgical precision, I broke it apart using vertices, extracting the band and those 
+                elusive buttons. Finally, I had my high-fidelity watch—a creation that made my overachiever 
+                heart sing with joy!</p>
+                
+                <p>The lesson wasn't about giving up; it was about working smarter, not harder. About knowing 
+                when to leverage resources and when to build from scratch.</p>
+            </div>
+        </section>
+
+        <!-- The Final Result -->
+        <div class="image-container">
+            <img src="watch.png" alt="Final COROS Watch 3D Render">
+            <p class="image-caption">The Final Result: My hard-won COROS watch render—a testament to perseverance and adaptation</p>
+        </div>
+
+        <!-- Epilogue -->
+        <section class="story-section">
+            <h2 class="chapter-title">Epilogue: Next Up, The Scene!</h2>
+            <div class="story-text">
+                <p>With my watch complete—a hybrid of personal effort and strategic resource use—I stand 
+                ready for the next challenge: creating the perfect scene to showcase this hard-won creation.</p>
+                
+                <p>The dark night of my soul has passed, leaving behind not just a 3D model, but a deeper 
+                understanding of the creative process itself. Sometimes the greatest achievement isn't in 
+                doing everything yourself—it's in knowing when to adapt, when to persist, and when to find 
+                a better way.</p>
+            </div>
+        </section>
+
+        <div class="epilogue">
+            <p class="epilogue-text">
+                "In the end, the perfect watch wasn't born from perfection—it was forged in the fires of 
+                frustration and reborn through the wisdom of knowing when to change course."
+            </p>
+        </div>
+    </div>
+</body>
+</html>
