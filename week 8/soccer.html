@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>What If — Soccer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0f14; --card:#121821; --ink:#e9eef5; --muted:#a9b5c6; --rule:#202a36;
+      --accent:#7ae582; --accent2:#58d1f7;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.55}
+    a{color:var(--accent2);text-decoration:none} a:hover{text-decoration:underline}
+    header{padding:40px 20px 10px;text-align:center}
+    header .kicker{display:inline-block;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);padding:4px 8px;border-radius:999px;margin-bottom:10px}
+    header h1{margin:0;font-size:clamp(28px,4.8vw,44px)}
+    header p{margin:.5rem auto 0;max-width:800px;color:var(--muted)}
+    main{max-width:1100px;margin:0 auto;padding:16px;display:grid;gap:16px}
+    .panel{background:var(--card);border:1px solid var(--rule);border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+    .panel h2{margin:0 0 8px;font-size:clamp(18px,2.4vw,22px)}
+    .panel h3{margin:16px 0 6px;color:var(--accent);font-size:clamp(16px,2.2vw,18px)}
+    ul,ol{margin:8px 0 12px 18px} li{margin:6px 0}
+    .grid-2{display:grid;grid-template-columns:1fr;gap:14px}
+    @media (min-width:900px){.grid-2{grid-template-columns:1.1fr .9fr}}
+    .sketch-wrap{background:#0f141b;border:1px solid var(--rule);border-radius:16px;padding:10px}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--rule);color:var(--muted);font-size:12px;margin-right:6px}
+    footer{text-align:center;color:var(--muted);padding:28px 12px 40px}
+  </style>
+</head>
+<body>
+  <header>
+    <span class="kicker">What If — Soccer</span>
+    <h1>From “DVD corner hit” vibes to a moving soccer composition</h1>
+    <p>
+      Documentation of my process building a rhythmic, HSB-driven p5.js composition with tiling, symmetry, loops, variation,
+      and non-linear movement.
+    </p>
+  </header>
+
+  <main>
+    <!-- LIVE SKETCH -->
+    <section class="panel">
+      <h2>Live p5.js Sketch!</h2>
+      <p class="muted">
+        If the embed doesn’t load (some hosts block iframes),
+        <a href="https://editor.p5js.org/emoystner/full/7nnPtUZyU" target="_blank" rel="noopener noreferrer">open the sketch in a new tab ↗</a>.
+      </p>
+      <div class="sketch-wrap">
+        <div style="position:relative;width:100%;max-width:1000px;aspect-ratio:835 / 600;margin:0 auto;">
+          <iframe
+            src="https://editor.p5js.org/emoystner/full/7nnPtUZyU"
+            title="What If — Soccer (p5.js)"
+            loading="lazy"
+            allowfullscreen
+            style="position:absolute;inset:0;border:0;width:100%;height:100%;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.25)">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW THIS MEETS THE BRIEF -->
+    <section class="panel grid-2">
+      <div>
+        <h2>How this meets the brief</h2>
+        <ul>
+          <li><span class="pill">HSB</span> Colors are in <strong>HSB</strong> for precise hue/brightness control (grass stripes, team kits, confetti).</li>
+          <li><span class="pill">Loops</span> Stripes, hex patterning on the ball, player generation, and layout grid use <strong>loops</strong>.</li>
+          <li><span class="pill">Rhythmic Composition</span> Alternating grass bands + mirrored field lines form a <strong>rhythmic base</strong> across the window.</li>
+          <li><span class="pill">Tiling & Symmetry</span> Pitch lines are symmetric; stripes tile across the full width; optional grid emphasizes repetition.</li>
+          <li><span class="pill">Variation</span> Hue shifts, confetti colors, moving players, ball spin, and collision outcomes vary over <strong>space & time</strong>.</li>
+          <li><span class="pill">Animation</span> Players wander non-linearly; ball reflects off normals; celebrations layer motion and color.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>TRY Extensions Implemented / Planned</h3>
+        <ul>
+          <li><strong>Non-linear movement:</strong> collision reflection + randomized “wander”.</li>
+          <li><strong>Randomness:</strong> spawn, velocities, confetti hues, slight vertex jitter.</li>
+          <li><strong>Images/Sound:</strong> Visuals done; next iteration adds crowd cheer on goals.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="panel">
+      <h2>Process (in my own words)</h2>
+      <p>
+        My goal is to be better at documentation, so here’s the honest path. I started on Pinterest hunting for inspiration - struggling I could not get the “DVD logo corner-hit” satisfaction out of my mind.
+        Originally thought: tennis ball: could I draw seams using circles and strokes to make it feel real? I asked ChatGPT about layered circles,
+        but then I pivoted—soccer felt like a better fit for satisfaction with the being able to make goals.
+      </p>
+      <p>
+        Next I explored a hex-patterned ball. I briefly chased a fully 3D example but it pulled in external code and got confusing, so I simplified:
+        a stylized 2D ball using hexagons arranged with loops and angles. I swapped the background image for a striped pitch in HSB, added proportional
+        linework, and then created “players” as triangles with consistent size. Making them move without flicker—and still let the ball bounce off them—
+        was the tricky part. I iterated a lot (and asked ChatGPT a lot). Eventually: moving players, a spinning ball, bounces, goals, and confetti. The
+        weirdest discovery: sometimes the ball only moved after players touched it—turns out spawn placement, damping, and tiny overlaps really matter.
+      </p>
+    </section>
+
+    <!-- PROBLEMS & SOLUTIONS -->
+    <section class="panel">
+      <h2>Problems & Solutions (log)</h2>
+      <ul>
+        <li><strong>Team colors kept showing as white.</strong> I was effectively passing the <code>random</code> function instead of numeric HSB values. <em>Fix:</em> set <code>colorMode(HSB, 360,100,100,255)</code> and always use <code>fill(h,s,b,a)</code> from the TEAM_COLORS object.</li>
+        <li><strong>Triangles looked inconsistent in size.</strong> Random vertex placement made extremes. <em>Fix:</em> generate near-equilateral triangles from a fixed radius, with small jitter only.</li>
+        <li><strong>Player flicker when moving.</strong> Updating vertices directly caused jumps. <em>Fix:</em> move by centroid delta (translate all 3 vertices together each frame).</li>
+        <li><strong>Ball sometimes spawned “stuck.”</strong> It spawned overlapping a player and instantly lost speed. <em>Fix:</em> safe-spawn away from players, add a tiny separation epsilon on collision, and enforce a minimum speed floor.</li>
+        <li><strong>3D ball path got too complex.</strong> External references were confusing. <em>Fix:</em> build a clear 2D stylization with loops and angles to meet the brief.</li>
+      </ul>
+    </section>
+
+    <!-- DEEP DIVE -->
+    <section class="panel">
+      <h2>Deep-Dive: Making the Ball Bounce Off Moving Players</h2>
+      <p>
+        The ball-player collision was the trickiest part to get right. Wall bounces are straightforward—just flip the x or y velocity—but players are constantly moving and their triangular shapes aren't aligned to any axis.
+    </p>
+    <p> My solution was ask ChatGPT who helped me to treat each player as a circular collision zone centered at the triangle's centroid. When the ball overlaps with a player, I calculate the collision normal (basically a unit vector pointing from the player to the ball), push the ball out by the overlap distance plus a small buffer to prevent it from getting stuck, then reflect its velocity across that normal. This creates realistic-looking bounces regardless of the player's position or movement.</p>
+      <p>
+        Two small tweaks made a huge difference: I added a slight damping factor to each collision to keep the energy from building up too much, and set a minimum speed threshold so the ball wouldn't get trapped in weird slow-motion overlaps. I also made sure the ball spawns in a clear space away from any players.
+      </p>
+      <p>The result is dynamic, unpredictable ball movement that keeps the whole system feeling active and engaging as players move around the canvas.</p>
+    </section>
+
+    <!-- CHECKLIST (explicit mapping) -->
+    <section class="panel">
+      <h2>Checklist (explicit mapping to the prompt)</h2>
+      <ul>
+        <li>✅ Visual pattern → alternating HSB grass stripes, tiling the full width.</li>
+        <li>✅ Rhythmic composition → stripes + mirrored field lines and circles.</li>
+        <li>✅ HSB color mode → used for field, teams, confetti, overlays.</li>
+        <li>✅ Loops → stripes, ball hex ring(s), player generation, grid.</li>
+        <li>✅ Composition/tiling/symmetry → full-window tiling and centered symmetry.</li>
+        <li>✅ TRY (movement, non-linear, randomness) → implemented; sound planned next.</li>
+      </ul>
+    </section>
+
+    <!-- HOW TO RUN -->
+    <section class="panel">
+      <h2>How to Run</h2>
+      <ol>
+        <li>Open this HTML page. The sketch loads inside the iframe.</li>
+        <li>If embedding is blocked, click:
+          <a href="https://editor.p5js.org/emoystner/full/7nnPtUZyU" target="_blank" rel="noopener noreferrer">open the sketch ↗</a>.
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 • What If — Soccer • Documented with love (and lots of “why isn’t this working?”)
+  </footer>
+</body>
+</html>
