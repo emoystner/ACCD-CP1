@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cosmic Orbits: Trig, Time, and Noise in Motion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg-main: #030616;
+      --bg-card: rgba(10, 16, 40, 0.9);
+      --bg-card-soft: rgba(14, 22, 60, 0.9);
+      --accent: #7dd3fc;
+      --accent-soft: #38bdf8;
+      --accent-strong: #f97316;
+      --text-main: #e5f0ff;
+      --text-muted: #9ca3af;
+      --border-soft: rgba(148, 163, 184, 0.3);
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.8);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --max-width: 1100px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at 10% -20%, #1d3557 0, transparent 55%),
+        radial-gradient(circle at 90% 120%, #3b0764 0, transparent 55%),
+        radial-gradient(circle at 80% 0%, #0f172a 0, transparent 40%),
+        var(--bg-main);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1.5px 1.5px at 80% 10%, rgba(255, 255, 255, 0.35), transparent),
+        radial-gradient(1.5px 1.5px at 60% 80%, rgba(255, 255, 255, 0.25), transparent),
+        radial-gradient(2px 2px at 25% 70%, rgba(255, 255, 255, 0.25), transparent);
+      opacity: 0.4;
+      z-index: -1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Layout */
+
+    .page-wrapper {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 80px 1.25rem 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .page-wrapper {
+        padding: 96px 1.5rem 4rem;
+      }
+    }
+
+    /* Nav */
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 55%),
+                  rgba(3, 6, 20, 0.88);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .nav-inner {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0.6rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .nav-inner {
+        padding-inline: 1.5rem;
+      }
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .nav-orbit-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #fef9c3, #fb923c 55%, #7c2d12);
+      box-shadow:
+        0 0 18px rgba(251, 146, 60, 0.55),
+        0 0 45px rgba(56, 189, 248, 0.35);
+      position: relative;
+    }
+
+    .nav-orbit-dot::before {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      opacity: 0.9;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    @media (min-width: 640px) {
+      nav ul {
+        font-size: 0.9rem;
+        gap: 1rem;
+      }
+    }
+
+    nav a {
+      padding: 0.3rem 0.7rem;
+      border-radius: var(--radius-pill);
+      color: var(--text-muted);
+      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+      white-space: nowrap;
+    }
+
+    nav a:hover {
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    /* Hero / Overview */
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-inner {
+      border-radius: 28px;
+      padding: 2.5rem 1.8rem 2.2rem;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(56, 189, 248, 0.22), transparent 60%),
+        radial-gradient(circle at 80% 120%, rgba(147, 51, 234, 0.28), transparent 65%),
+        rgba(15, 23, 42, 0.93);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .hero-inner {
+        padding: 3.2rem 3rem 2.6rem;
+      }
+    }
+
+    .hero-orbit-graphic {
+      position: absolute;
+      inset: -40%;
+      pointer-events: none;
+      opacity: 0.25;
+      background-image:
+        radial-gradient(circle at 50% 50%, transparent 40%, rgba(148, 163, 184, 0.3) 41%, transparent 45%),
+        radial-gradient(circle at 50% 50%, transparent 55%, rgba(56, 189, 248, 0.18) 56%, transparent 60%),
+        radial-gradient(circle at 50% 50%, transparent 70%, rgba(248, 250, 252, 0.12) 71%, transparent 74%);
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 640px;
+    }
+
+    .hero-kicker {
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 4vw, 2.7rem);
+      line-height: 1.1;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-title span {
+      background: linear-gradient(120deg, #38bdf8, #a855f7, #f97316);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 0.98rem;
+      color: var(--text-muted);
+      max-width: 34rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1.6rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #0b1020;
+      background: radial-gradient(circle at 20% 0%, #fef9c3, #f97316 60%, #b91c1c);
+      box-shadow:
+        0 0 20px rgba(248, 250, 252, 0.3),
+        0 18px 35px rgba(15, 23, 42, 0.9);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px) scale(1.01);
+      filter: brightness(1.03);
+      box-shadow:
+        0 0 30px rgba(248, 250, 252, 0.35),
+        0 20px 40px rgba(15, 23, 42, 0.95);
+    }
+
+    .btn-secondary {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .btn-secondary span {
+      color: var(--accent-soft);
+    }
+
+    /* Generic section styles */
+
+    section {
+      margin-bottom: 2.75rem;
+    }
+
+    .section-heading {
+      font-size: 1.35rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 1.5rem 1.3rem;
+      box-shadow: var(--shadow-soft);
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 1.8rem 1.7rem;
+      }
+    }
+
+    /* Assignment section */
+
+    .assignment-list {
+      margin-top: 0.9rem;
+      padding-left: 1.1rem;
+      font-size: 0.95rem;
+    }
+
+    .assignment-list li {
+      margin-bottom: 0.45rem;
+      color: var(--text-muted);
+    }
+
+    .ai-note {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-soft);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Sketch section */
+
+    .sketch-section .card {
+      text-align: left;
+    }
+
+    .sketch-description {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .iframe-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 820px;
+      margin-inline: auto;
+      background: radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.25), transparent 60%),
+                  rgba(15, 23, 42, 0.95);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 0.75rem;
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.9);
+    }
+
+    .iframe-inner {
+      position: relative;
+      width: 100%;
+      padding-bottom: 100%; /* 1:1 square */
+      overflow: hidden;
+      border-radius: calc(var(--radius-md) - 4px);
+      background: radial-gradient(circle at 50% 30%, #020617, #020617);
+    }
+
+    .iframe-inner iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: inherit;
+    }
+
+    .iframe-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+      text-align: center;
+    }
+
+    /* Process / iterations */
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (min-width: 720px) {
+      .process-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1080px) {
+      .process-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .iteration-card {
+      background: var(--bg-card-soft);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 1.1rem 1rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.85);
+    }
+
+    .iteration-card h3 {
+      font-size: 1rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .iteration-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+   .iteration-frame-wrapper {
+  position: relative;
+  height: 260px;          /* visible window height */
+  overflow: hidden;
+  border-radius: 10px;
+  background: #020617;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.iteration-frame-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 800px;           /* p5 page size */
+  height: 800px;
+  border: none;
+  display: block;
+  transform: scale(0.40); /* 260 / 800 ≈ 0.325 */
+  transform-origin: top left;
+}
+
+
+    /* How the Code Works */
+
+    .code-section .card {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .code-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .code-block-group {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+    }
+
+    @media (min-width: 768px) {
+      .code-block-group {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .code-item {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      padding: 0.9rem 0.9rem 0.95rem;
+    }
+
+    .code-item h3 {
+      font-size: 0.98rem;
+      margin-bottom: 0.4rem;
+      color: var(--accent);
+    }
+
+    .code-item p {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    /* Reflection */
+
+    .reflection .card p {
+      font-size: 0.93rem;
+      color: var(--text-muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .reflection .card p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Footer */
+
+    footer {
+      padding: 1.5rem 1.25rem 2.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    footer span {
+      color: var(--accent-soft);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="nav-orbit-dot"></div>
+        <span>p5.js Cosmic Study</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#sketch">Sketch</a></li>
+          <li><a href="#process">Process</a></li>
+          <li><a href="#code">Code</a></li>
+          <li><a href="#reflection">Reflection</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-wrapper">
+    <!-- HERO / OVERVIEW -->
+    <section id="overview" class="hero">
+      <div class="hero-inner">
+        <div class="hero-orbit-graphic"></div>
+        <div class="hero-content">
+          <div class="hero-kicker">Creative Coding · p5.js</div>
+          <h1 class="hero-title">
+            Cosmic Orbits: <span>Trig, Time, and Noise in Motion</span>
+          </h1>
+          <p class="hero-subtitle">
+            An outer-space inspired p5.js animation that turns the solar system into a lab
+            for exploring trigonometric motion, timed events with <code>millis()</code>, and
+            organic variation using randomness and Perlin noise.
+          </p>
+          <div class="hero-actions">
+            <a href="#sketch" class="btn-primary">
+              View Interactive Sketch
+              <span>⬇︎</span>
+            </a>
+            <div class="btn-secondary">
+              Sections: <span>Sketch · Process · Code · Reflection</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assignment Description -->
+      <section class="assignment">
+        <div class="card">
+          <h2 class="section-heading">The Assignment</h2>
+          <p class="section-subtitle">
+            This project was created for a creative coding homework assignment using p5.js.
+            The goal was to design an animation that combines mathematical motion, timed
+            events, and organic variation in a visually cohesive scene.
+          </p>
+          <ul class="assignment-list">
+            <li>Create an animation with at least two moving shapes.</li>
+            <li>
+              One shape must move in a repeated motion described by a trigonometric function
+              (for example, using <code>sin()</code> and <code>cos()</code> to create an orbit
+              or oscillation).
+            </li>
+            <li>
+              A second shape must perform a movement <strong>after a predetermined interval
+              of time</strong> has passed, using a time function such as
+              <code>millis()</code>.
+            </li>
+            <li>
+              The two motions should be <strong>de-synchronized</strong> to create a more complex,
+              layered rhythm instead of everything looping in sync.
+            </li>
+            <li>
+              Use <strong>randomness</strong> and/or <strong>Perlin noise</strong> to create more
+              organic shapes or motion so the scene feels less mechanical.
+            </li>
+            <li>
+              Capture multiple iterations of the sketch and document how the work evolved
+              over time.
+            </li>
+            <li>
+              Embed the final sketch and the iteration sketches from openProcessing or
+              p5.js into this webpage as part of the documentation.
+            </li>
+          </ul>
+          <p class="ai-note">
+            Note: I used ChatGPT as an assistive tool for brainstorming ideas, debugging,
+            and polishing some of the wording on this page. All final code, design decisions,
+            and testing were done by me.
+          </p>
+        </div>
+      </section>
+    </section>
+
+    <!-- INTERACTIVE FINAL SKETCH -->
+    <section id="sketch" class="sketch-section">
+      <h2 class="section-heading">Interactive Sketch</h2>
+      <p class="section-subtitle">
+        A stylized solar system built from orbits, time-based events, and noisy light.
+      </p>
+      <div class="card">
+        <p class="sketch-description">
+          The final scene is a mini cosmic system: planets orbit around a noisy, flickering
+          sun using trigonometric motion. Moons circle their host planets at different
+          speeds, while a comet periodically streaks through space along a curved,
+          randomly chosen trajectory. Perlin noise and randomness drive the twinkling
+          starfield, shimmering sun, and irregular comet timing, making the motion feel
+          organic and alive rather than perfectly mechanical.
+        </p>
+
+        <div class="iframe-wrapper">
+          <div class="iframe-inner">
+            <!-- TODO: Replace src with my FINAL sketch URL -->
+            <iframe src="https://editor.p5js.org/emoystner/embed/GDIunSFm9"></iframe>
+          </div>
+        </div>
+        <p class="iframe-note">
+          Final interactive sketch embedded from the p5.js editor.
+        </p>
+      </div>
+    </section>
+
+    <!-- PROCESS / ITERATIONS -->
+    <section id="process" class="process-section">
+      <h2 class="section-heading">Process &amp; Iterations</h2>
+      <p class="section-subtitle">
+        Each version of the sketch builds on the previous one, gradually increasing the
+        complexity of the motion, the number of celestial bodies, and the use of time and
+        randomness.
+      </p>
+
+      <div class="process-grid">
+        <!-- HW V1 -->
+        <div class="iteration-card">
+          <h3>HW V1 – First Orbit Test</h3>
+          <div class="iteration-frame-wrapper">
+            <!-- TODO: Replace src with my HW V1 sketch URL -->
+            <iframe src="https://editor.p5js.org/emoystner/embed/zkA-Cx7wD"></iframe>
+          </div>
+          <p>
+            In this version, I focused on getting one planet to orbit smoothly around the
+            center using <code>sin()</code> and <code>cos()</code> for its x and y
+            position. This was my basic test of trigonometric motion in p5.js, and it
+            confirmed that a simple angle-plus-radius setup could create clean circular
+            movement.
+          </p>
+        </div>
+
+        <!-- HW V2 -->
+        <div class="iteration-card">
+          <h3>HW V2 – Details and Better Sun</h3>
+          <div class="iteration-frame-wrapper">
+            <!-- TODO: Replace src with my HW V2 sketch URL -->
+            <iframe src="https://editor.p5js.org/emoystner/embed/nk3o6nCFC"></iframe>
+          </div>
+          <p>
+            Here I started building out the scene: I added a starfield background and
+            experimented with making the sun feel more interesting than a flat circle.
+            I also refined Earth so it had an atmosphere and simple “continents,” which
+            made the orbiting motion visually clearer and more satisfying to watch.
+          </p>
+        </div>
+
+        <!-- HW V3 -->
+        <div class="iteration-card">
+          <h3>HW V3 – New Sun</h3>
+          <div class="iteration-frame-wrapper">
+            <!-- TODO: Replace src with my HW V3 sketch URL -->
+            <iframe src="https://editor.p5js.org/emoystner/embed/tFRoAxtFc"></iframe>
+          </div>
+          <p>
+            I didn’t love the original sun, so this version swaps it out for a noisy,
+            multi-layered sun built from several overlapping circles. Perlin noise drives
+            the radius and slight position offsets, making the sun “breathe” and flicker
+            like an energetic star instead of staying perfectly static.
+          </p>
+        </div>
+
+        <!-- HW V4 -->
+        <div class="iteration-card">
+          <h3>HW V4 – MOON</h3>
+          <div class="iteration-frame-wrapper">
+            <!-- TODO: Replace src with my HW V4 sketch URL -->
+            <iframe src="https://editor.p5js.org/emoystner/embed/lpyc3Xv5I"></iframe>
+          </div>
+          <p>
+            In this iteration, I added a moon that orbits Earth. The moon uses its own
+            angle, radius, and <code>cos()</code>/<code>sin()</code> calculations, but it
+            is drawn relative to Earth’s position. This created a nested orbit system and
+            highlighted how trigonometric motion can be composed hierarchically.
+          </p>
+        </div>
+
+        <!-- HW V5 -->
+        <div class="iteration-card">
+          <h3>HW V5 – SOLAR SYSTEM</h3>
+          <div class="iteration-frame-wrapper">
+            <!-- TODO: Replace src with my HW V5 sketch URL -->
+            <iframe src="https://editor.p5js.org/emoystner/embed/R8oprbI2Z"></iframe>
+          </div>
+          <p>
+            This step expanded the scene into a full stylized solar system. I added all
+            the major planets, each with different orbit radii and angular speeds. By
+            giving each planet a unique speed, the orbits became naturally de-synchronized,
+            creating a more complex and layered rhythm of motion.
+          </p>
+        </div>
+
+        <!-- HW V6 -->
+        <div class="iteration-card">
+          <h3>HW V6 – MORE MOONS</h3>
+          <div class="iteration-frame-wrapper">
+            <!-- TODO: Replace src with my HW V6 sketch URL -->
+            <iframe src="https://editor.p5js.org/emoystner/embed/hU6s-Q8Y5"></iframe>
+          </div>
+          <p>
+            In this version, I added additional moons to other planets—Jupiter, Mars, and
+            Uranus. Each moon received its own orbit radius, speed, and starting angle.
+            The result is a dense choreography of smaller orbits spinning at different
+            rates, which further enhances the de-synchronized, complex rhythm of the system.
+          </p>
+        </div>
+
+        <!-- HW V7 -->
+        <div class="iteration-card">
+          <h3>HW V7 – Final Cosmic Composition with Comet</h3>
+          <div class="iteration-frame-wrapper">
+            <!-- TODO: Replace src with my HW V7 sketch URL -->
+            <iframe src="https://editor.p5js.org/emoystner/embed/GDIunSFm9"></iframe>
+          </div>
+          <p>
+            The final version introduces a comet that appears at random intervals and
+            travels across the scene on a curved path. Its spawn time is controlled using
+            <code>millis()</code>, and each pass uses randomized starting edges,
+            directions, and speeds. A glowing tail composed of fading circles trails behind
+            it, creating a striking, non-looping contrast to the steady orbital motion of
+            the planets.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW THE CODE WORKS -->
+    <section id="code" class="code-section">
+      <h2 class="section-heading">How the Code Works</h2>
+      <p class="section-subtitle">
+        Under the hood, the sketch combines trigonometric functions, time-based logic,
+        randomness, and noise to build a dynamic outer-space animation.
+      </p>
+
+      <div class="card">
+        <p class="code-subtitle">
+          Here’s a high-level breakdown of the core ideas behind the animation:
+        </p>
+
+        <div class="code-block-group">
+          <div class="code-item">
+            <h3>Trigonometric Motion (Repeated Orbits)</h3>
+            <p>
+              Each planet’s orbit is defined using an angle and a radius. For every frame,
+              the code updates the angle and uses <code>cos(angle)</code> and
+              <code>sin(angle)</code> to compute the x and y position:
+              <em>x = cos(angle) * radius</em>,
+              <em>y = sin(angle) * radius</em>. This produces smooth circular motion. The
+              same idea is reused for moons orbiting planets, creating nested orbital
+              systems that all rely on trigonometric functions.
+            </p>
+          </div>
+
+          <div class="code-item">
+            <h3>Timed Interval Movement with <code>millis()</code></h3>
+            <p>
+              The comet’s movement is controlled by time. The sketch uses
+              <code>millis()</code> to check how many milliseconds have passed since the
+              program started. Once the current time passes a stored threshold
+              (<code>nextCometTime</code>), the code triggers <code>spawnComet()</code>.
+              The comet then moves across the screen until it exits the view, and the
+              sketch schedules the next comet by setting a new
+              <code>nextCometTime</code> further in the future.
+            </p>
+          </div>
+
+          <div class="code-item">
+            <h3>De-Synchronizing the Motions</h3>
+            <p>
+              To avoid everything looping in perfect unison, each moving element has its
+              own speed and sometimes its own starting phase. For example, Mercury and
+              Neptune orbit at very different angular speeds, moons orbit at their own
+              rates, and the comet appears based on a separate timing system. This
+              de-synchronization creates a layered, complex rhythm that feels more like a
+              living system than a single repeating cycle.
+            </p>
+          </div>
+
+          <div class="code-item">
+            <h3>Randomness &amp; Perlin Noise for Organic Feel</h3>
+            <p>
+              <code>random()</code> and <code>noise()</code> are used in several places to
+              keep the animation from feeling too mechanical. The starfield uses
+              randomness to scatter stars and vary their brightness. The sun uses Perlin
+              noise to gently wobble its radius and position, giving it a flickering,
+              breathing quality. The comet’s spawn time, starting edge, direction, and
+              speed are randomized, so each pass through the scene feels unique and
+              unpredictable.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REFLECTION -->
+    <section id="reflection" class="reflection">
+      <h2 class="section-heading">Reflection</h2>
+      <p class="section-subtitle">
+        Looking back at the process of building this sketch and connecting math, time, and
+        randomness to visual motion.
+      </p>
+
+      <div class="card">
+        <p>
+          Working on this project helped me understand how powerful trigonometric
+          functions are for animation. Using <code>sin()</code> and <code>cos()</code> to
+          drive orbits made it clear how a simple angle and radius can turn into smooth,
+          continuous motion. Once I had one planet working, it became almost like a
+          pattern: I could duplicate the same logic for other planets and moons and then
+          tweak radii and speeds to build up the solar system.
+        </p>
+        <p>
+          Playing with <code>millis()</code> and timed events shifted the way I think
+          about rhythm in animation. Instead of everything updating in the same pattern
+          each frame, the comet exists on its own schedule. It only appears after certain
+          intervals have passed, and each appearance is slightly different. Combined with
+          different orbit speeds, this made the scene feel much more alive and less like a
+          single looping GIF.
+        </p>
+        <p>
+          De-synchronizing the motions and adding randomness and Perlin noise turned out
+          to be the key for making the scene feel organic. The noisy sun, twinkling stars,
+          and irregular comet passes keep the viewer’s eye moving. In the future, I’d like
+          to explore adding interactivity (for example, reacting to mouse or audio input),
+          more detailed planet textures, and maybe sound-reactive movement so the solar
+          system could respond to music in real time.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      Cosmic Orbits · p5.js Homework Documentation &mdash; <span>Creative Coding</span>
+    </p>
+    <p>
+      Portions of this documentation and some code refinements were developed with
+      assistance from ChatGPT and then reviewed and edited by the author.
+    </p>
+  </footer>
+</body>
+</html>
