@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pond Crossing System – Interactive Frogger Pond</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --pond-blue: #1c3b57;
+      --pond-light: #e7f7f5;
+      --lily-green: #70b38f;
+      --lily-dark: #467d5f;
+      --accent-yellow: #ffe78c;
+      --text-dark: #132025;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #8bd9ff 0, #e7f7f5 35%, #bfdcd0 100%);
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* =========================
+       BIGGER FLOATING LILY PADS
+       ========================= */
+
+    .lilypad {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle at 30% 20%, #b5ffd0 0, #5da872 45%, #2f6d49 100%);
+      border-radius: 65% 40% 60% 45%;
+      box-shadow: 0 28px 45px rgba(0, 0, 0, 0.22);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 0;
+      animation: float 14s ease-in-out infinite alternate;
+    }
+
+    .lilypad::before {
+      /* notch in the lily pad */
+      content: "";
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle, rgba(199, 238, 212, 0.9) 0, transparent 60%);
+      border-radius: 50%;
+      top: 52%;
+      left: 2%;
+      transform: translateY(-40%);
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.32);
+      clip-path: polygon(0 0, 100% 10%, 70% 100%, 0% 100%);
+      opacity: 0.97;
+    }
+
+    .lilypad::after {
+      /* tiny flower on the pad */
+      content: "";
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffe7f5 0, #ffc2dd 40%, #f08ab3 100%);
+      top: 22%;
+      right: 11%;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.32);
+    }
+
+    .lilypad-header-1 {
+      top: -40px;
+      left: -70px;
+      transform: rotate(-8deg);
+      animation-delay: -3s;
+    }
+
+    .lilypad-header-2 {
+      top: 30px;
+      right: -110px;
+      transform: rotate(12deg);
+      animation-delay: -6s;
+    }
+
+    .lilypad-main-1 {
+      top: 50%;
+      left: -90px;
+      transform: rotate(6deg);
+    }
+
+    .lilypad-main-2 {
+      top: 78%;
+      right: -90px;
+      width: 200px;
+      height: 200px;
+      transform: rotate(-10deg);
+      animation-duration: 16s;
+    }
+
+    .lilypad-main-3 {
+      top: 34%;
+      right: 6%;
+      width: 170px;
+      height: 170px;
+      opacity: 0.75;
+      animation-duration: 13s;
+      animation-delay: -4s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(10px) translateX(6px) rotate(2deg);
+      }
+      100% {
+        transform: translateY(-8px) translateX(-6px) rotate(-2deg);
+      }
+    }
+
+    /* =========================
+       WATER RIPPLES
+       ========================= */
+
+    .pond-ripple {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 0;
+      animation: ripple 9s ease-out infinite;
+    }
+
+    .pond-ripple.r1 {
+      top: 42%;
+      left: 12%;
+      animation-delay: 0s;
+    }
+
+    .pond-ripple.r2 {
+      top: 70%;
+      right: 8%;
+      width: 220px;
+      height: 220px;
+      animation-delay: -3s;
+    }
+
+    .pond-ripple.r3 {
+      top: 30%;
+      right: 32%;
+      width: 200px;
+      height: 200px;
+      animation-delay: -5s;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0.7);
+        opacity: 0.4;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 0.65;
+      }
+      100% {
+        transform: scale(1.25);
+        opacity: 0;
+      }
+    }
+
+    /* =========================
+       HEADER + HERO
+       ========================= */
+
+    header {
+      background: linear-gradient(135deg, var(--pond-blue), #102232);
+      color: white;
+      padding: 2.5rem 1.5rem 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 10% 90%, rgba(255,255,255,0.12) 0, transparent 50%),
+        radial-gradient(circle at 80% 10%, rgba(255,255,255,0.18) 0, transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hero-text {
+      max-width: 520px;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 3vw, 2.8rem);
+      margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+      font-size: 1.05rem;
+      opacity: 0.9;
+      margin-bottom: 1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+
+
+
+.hero-frog {
+  max-width: 260px;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-frog img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  filter: saturate(1.05) contrast(1.05);
+}
+
+
+
+    main {
+      max-width: 960px;
+      margin: -2rem auto 3rem;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      margin-bottom: 1.75rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.94);
+      border-radius: 1.4rem;
+      padding: 1.5rem 1.75rem;
+      box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(0, 0, 0, 0.02);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(112,179,143,0.1), transparent 60%);
+      right: -40px;
+      top: -40px;
+      pointer-events: none;
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .subheading {
+      font-size: 0.95rem;
+      color: #4c6168;
+      margin-bottom: 0.75rem;
+    }
+
+    p + p {
+      margin-top: 0.5rem;
+    }
+
+    ul {
+      margin-left: 1.25rem;
+      margin-top: 0.5rem;
+    }
+
+    li + li {
+      margin-top: 0.3rem;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    @media (max-width: 720px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .hero-frog {
+        align-self: center;
+      }
+      .two-column {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .pill-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #6a7f86;
+      margin-bottom: 0.4rem;
+    }
+
+    figure {
+      margin-top: 0.75rem;
+    }
+
+    figure img {
+      max-width: 100%;
+      border-radius: 1rem;
+      border: 2px solid rgba(0,0,0,0.06);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+    }
+
+    figure figcaption {
+      font-size: 0.85rem;
+      color: #617077;
+      margin-top: 0.35rem;
+    }
+
+    .pond-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .pill-tag {
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(112,179,143,0.14);
+      font-size: 0.8rem;
+      color: #264437;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .pill-tag span {
+      font-size: 1rem;
+    }
+
+    .iframe-wrapper {
+      position: relative;
+      padding-top: 62%;
+      border-radius: 1.2rem;
+      overflow: hidden;
+      box-shadow: 0 12px 26px rgba(0,0,0,0.22);
+      background: #000;
+      margin-top: 0.75rem;
+    }
+
+    .iframe-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .note {
+      font-size: 0.85rem;
+      color: #5d7077;
+      margin-top: 0.4rem;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #55656b;
+      padding-bottom: 2rem;
+    }
+
+    /* =========================
+       JUMPING FROG (BACKGROUND)
+       ========================= */
+
+    .jumping-frog {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+      animation: frog-hop 10s cubic-bezier(0.5, 0, 0.4, 1) infinite;
+    }
+
+    .jumping-frog img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.05) contrast(1.05);
+    }
+
+    /* Keyframes: frog only moves over lily pad-ish positions */
+    /* You can tweak these % values if you want it to sit more perfectly centered */
+
+    @keyframes frog-hop {
+      0% {
+        /* near left main lily pad */
+        top: 52%;
+        left: 6%;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      33% {
+        /* near upper-right lily pad */
+        top: 36%;
+        left: 72%;
+        transform: translate(-50%, -50%) scale(1.03);
+      }
+      66% {
+        /* near lower-right lily pad */
+        top: 78%;
+        left: 88%;
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        /* back to left lily pad */
+        top: 52%;
+        left: 6%;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background lily pads -->
+  <div class="lilypad lilypad-header-1"></div>
+  <div class="lilypad lilypad-header-2"></div>
+  <div class="lilypad lilypad-main-1"></div>
+  <div class="lilypad lilypad-main-2"></div>
+  <div class="lilypad lilypad-main-3"></div>
+
+  <!-- Water ripples -->
+  <div class="pond-ripple r1"></div>
+  <div class="pond-ripple r2"></div>
+  <div class="pond-ripple r3"></div>
+
+  <!-- Jumping frog across the lily pads, using frog.png -->
+  <div class="jumping-frog">
+    <img src="frog.png" alt="Small frog hopping between lily pads" />
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <div class="hero-text">
+        <div class="pill">
+          <span>🐸</span>
+          <span>Interactive System with UI</span>
+        </div>
+        <h1>Pond Crossing System</h1>
+        <p class="tagline">
+          A tiny frog, a busy pond road, drifting logs, and an ever-speeding world.
+          This page documents my p5.js system, diagrams, and process.
+        </p>
+      </div>
+
+      
+<div class="hero-frog">
+  <img src="frog2.png" alt="Frog sitting in the pond" />
+</div>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Intent & Overview -->
+    <section>
+      <div class="card">
+        <h2>✨ Intent</h2>
+        <p>
+          For this assignment I wanted to a Frogger style game. A single frog (the player) tries to cross multiple rows of
+          moving cars and floating logs to reach the safe lily pads at the top.
+        </p>
+        <p>
+          My goal was to explore how simple local rules&mdash;cars moving in lanes,
+          logs drifting on a river, and a frog hopping on a grid&mdash;can create
+          <strong>emergent patterns of danger and safety</strong> as traffic speed
+          and timing change over time.
+        </p>
+      </div>
+    </section>
+
+    <!-- System Description -->
+    <section>
+      <div class="card two-column">
+        <div>
+          <h2>🌿 System: The Pond World</h2>
+          <p class="subheading">
+            System components, agents, and relationships.
+          </p>
+          <p>
+            The pond is divided into horizontal rows (like lily pad lanes), each
+            with a different behavior:
+          </p>
+          <ul>
+            <li><strong>Grass rows</strong>: safe zones where the frog can rest.</li>
+            <li><strong>Road rows</strong>: cars drive in opposite directions
+              across different lanes; any overlap with the frog causes a hit.</li>
+            <li><strong>River rows</strong>: logs float by; the frog must stand on a log
+              or it drowns.</li>
+            <li><strong>Goal row</strong>: the top strip of the pond&mdash;reaching it
+              completes a round.</li>
+          </ul>
+
+          <div class="pond-pill-row">
+            <div class="pill-tag"><span>🐸</span> Frog (player agent)</div>
+            <div class="pill-tag"><span>🚗</span> Cars (hazard agents)</div>
+            <div class="pill-tag"><span>🪵</span> Logs (moving platforms)</div>
+          </div>
+
+          <p>
+            The frog is directly controlled by the player using the arrow keys
+            (up, down, left, right). Cars and logs are autonomous agents with
+            their own speeds and directions. A speed slider controls global
+            traffic intensity, and each successful crossing increases the
+            system's difficulty for the next round.
+          </p>
+        </div>
+
+        <div>
+          <p class="pill-label">Core classes (OOP)</p>
+          <ul>
+            <li><strong>Frog</strong> – position, lives, hopping, goal check, drawing.</li>
+            <li><strong>Car</strong> – movement, wrapping across the screen,
+              collision with frog, drawing.</li>
+            <li><strong>Log</strong> – movement, wrapping, carrying the frog when
+              overlapped, drawing.</li>
+            <li><strong>Game</strong> – creates rows, spawns cars/logs, updates all
+              agents, checks collisions, drowning, goals, level and difficulty.</li>
+          </ul>
+          <p class="note">
+            The <strong>Game</strong> object acts as a controller: it owns the frog,
+            arrays of cars and logs, reads UI input, and orchestrates the
+            per-frame update loop.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- UML Diagram -->
+    <section>
+      <div class="card">
+        <h2>📊 UML Diagram</h2>
+        <p class="subheading">
+          Class structure of the pond crossing system.
+        </p>
+        <p>
+          The UML diagram below shows the main classes, their key methods and
+          properties, and how they relate. <strong>Game</strong> holds one
+          frog and many cars and logs. Cars and logs both interact with the frog
+          through collision or carrying behavior.
+        </p>
+
+        <figure>
+          <!-- Replace UML-diagram.png with your actual UML image file -->
+          <img src="UML-diagram.png" alt="UML diagram of the Frog, Car, Log, and Game classes." />
+          <figcaption>
+            UML diagram: Game owns the frog, cars, and logs; cars can hit the frog,
+            logs can carry the frog across the river.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Flowchart -->
+    <section>
+      <div class="card">
+        <h2>🔁 Flowchart</h2>
+        <p class="subheading">
+          How each frame of the system updates.
+        </p>
+        <p>
+          The flowchart focuses on the per-frame logic: read UI, update agents,
+          handle collisions and drowning, check for goal, then draw the scene.
+          There is also a smaller branch for keyboard input that hops the frog
+          between rows.
+        </p>
+
+        <figure>
+          <img src="Flowchart.png" alt="Flowchart showing the update loop of the pond crossing system." />
+          <figcaption>
+            Flowchart: read slider → update cars/logs → check road collisions →
+            check river & logs → check goal → draw world.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Interaction & UI -->
+    <section>
+      <div class="card two-column">
+        <div>
+          <h2>🎛️ Interaction & UI</h2>
+          <p class="subheading">
+            Direct control (frog) and indirect control (global speed).
+          </p>
+          <ul>
+            <li><strong>Arrow keys</strong>: move the frog one tile at a time
+              (up / down / left / right).</li>
+            <li><strong>Speed slider</strong>: scales the speed of every car and log
+              in the pond, making gaps appear and disappear faster.</li>
+            <li><strong>Lives (♥)</strong>: hearts in the top-left show how many
+              chances the frog has left.</li>
+            <li><strong>Level & difficulty</strong>: each time the frog reaches the
+              goal row, the level increases and all agents get a bit faster.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h2>🌊 Emergent Pond Behavior</h2>
+          <p class="subheading">
+            What emerges from simple rules.
+          </p>
+          <ul>
+            <li>
+              Different lane speeds and directions create shifting
+              <strong>patterns of safe gaps</strong> in the traffic and logs.
+            </li>
+            <li>
+              At higher difficulty levels, logs and cars line up in new ways,
+              sometimes opening up surprising “just-barely safe” paths.
+            </li>
+            <li>
+              The frog’s discrete hops and the continuous motion of agents
+              produce timing-based strategies: pause in grass rows, wait for the
+              right gap, then commit.
+            </li>
+            <li>
+              Because initial positions are randomized, no two pond crossings
+              play out exactly the same.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Embedded Sketch -->
+    <section>
+      <div class="card">
+        <h2>🧪 Interactive Sketch</h2>
+        <p class="subheading">
+          Built in p5.js with Object-Oriented programming.
+        </p>
+        <p>
+          The sketch below is my implementation of the pond crossing system in
+          p5.js. The frog, cars, logs, and game controller are separate classes.
+          The game loop updates each agent, checks their relationships, and
+          renders the world frame by frame.
+        </p>
+
+        <div class="iframe-wrapper">
+          <iframe
+            src="https://editor.p5js.org/emoystner/full/J7GZwmDqx"
+            title="Pond Crossing p5.js Sketch"
+          ></iframe>
+        </div>
+
+        <p class="note">
+          Embedded from the p5.js web editor: arrow keys to move, slider to adjust speed.
+        </p>
+      </div>
+    </section>
+
+    <!-- Process Summary -->
+    <section>
+      <div class="card">
+        <h2>🪷 Process Summary</h2>
+        <p>
+  This project started as a humble little circle bouncing around a canvas inside a class called <strong>Particle</strong> — a basic example of Object-Oriented Programming in p5.js that demonstrated motion (<code>move()</code>) and visual representation (<code>display()</code>). The code was chaotic and adorable, but what intrigued me most was the invisible system beneath it: independent agents, each making tiny decisions, creating larger behavior when grouped.
+</p>
+
+<p>
+  Once I chose to remix it into a <strong>pond-crossing ecosystem inspired by Frogger mechanics</strong>, the circles evolved into real symbolic agents with *jobs to do*. I replaced one generic class with four intentionally structured ones:
+</p>
+
+<p>
+  <strong>Frog</strong> became my one brave player-controlled agent, moving between rows using grid-based position logic (<code>this.pos.y += dy * tileSize</code>) and resetting on failure (<code>reset()</code>). <strong>Car</strong> agents took over the road lanes, moving left or right using directional velocity (<code>this.pos.x += this.speed * this.direction</code>) and wrapping when they moved off screen (<code>if (this.pos.x > width) this.pos.x = -tileSize;</code>). <strong>Log</strong> agents drifted along the river rows, built to physically carry the frog across the water using a relational interaction check (<code>carries(frog)</code>) that updated the frog’s position when overlapped, proving the system elements could *affect each other*, not just exist next to each other.
+</p>
+
+<p>
+  The <strong>Game</strong> class became the wise old pond architect — the controller that owns the frog, stores the arrays of cars and logs, reads UI input, and orchestrates interactions every frame. Each round is tracked internally using: <code>this.level++</code>, <code>this.difficulty += 0.25</code>, and a compounded speed multiplier (<code>car.update(this.trafficSpeed * difficulty)</code>). These stacked local rules generate emergent system behavior over time: once-spacious lanes tighten, timing becomes strategic, and the crossings feel less like a game and more like negotiating rush-hour over a lake.
+</p>
+
+<p>
+  To make sure the system stayed interactive, I added both <strong>direct input control</strong> (arrow keys to hop the frog) and <strong>indirect system influence</strong> (a slider created in <code>setup()</code> using <code>createSlider()</code> to globally scale agent speed). Rather than creating new gameplay rules, I leaned into complexity by simply increasing system intensity each time the frog succeeds. Because movement speed compounds using <code>speedMultiplier = trafficSpeed * difficulty;</code> instead of fixed values, the pond evolves into increasingly unpredictable and difficult behavior patterns without breaking the core loop.
+</p>
+
+<p>
+  The last step was to pull the metaphor all the way through: if the code is a pond, the site should *feel* like one too. I built this webpage to document not only the system logic, but the personality of it — giant floating lily pads, a hopping frog agent looping over the pads, and gentle ripples pulsing in the background — all to visually match the layered relational system now living inside the sketch itself.
+</p>
+
+        </p>
+      </div>
+    </section>
+
+    <div class="footer">
+      Frogger-inspired pond system · p5.js · Object-Oriented design ·
+      Interactive Systems with UI
+    </div>
+  </main>
+</body>
+</html>
