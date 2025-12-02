@@ -393,22 +393,25 @@
     }
 
     .iframe-wrapper {
-      position: relative;
-      padding-top: 62%;
-      border-radius: 1.2rem;
-      overflow: hidden;
-      box-shadow: 0 12px 26px rgba(0,0,0,0.22);
-      background: #000;
-      margin-top: 0.75rem;
-    }
+  position: relative;
+  width: 100%;
+  max-width: 600px;       /* keeps it nice on big screens */
+  height: 725px;          /* tall enough for 800x600 canvas + slider */
+  border-radius: 1.2rem;
+  overflow: hidden;
+  box-shadow: 0 12px 26px rgba(0,0,0,0.22);
+  background: #000;
+  margin-top: 0.75rem;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-    .iframe-wrapper iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
+.iframe-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
 
     .note {
       font-size: 0.85rem;
@@ -676,7 +679,7 @@
               sometimes opening up surprising “just-barely safe” paths.
             </li>
             <li>
-              The frog’s discrete hops and the continuous motion of agents
+              The frog’s hops and the cars and logs 
               produce timing-based strategies: pause in grass rows, wait for the
               right gap, then commit.
             </li>
@@ -719,32 +722,147 @@
     <!-- Process Summary -->
     <section>
       <div class="card">
-        <h2>🪷 Process Summary</h2>
-        <p>
-  This project started as a humble little circle bouncing around a canvas inside a class called <strong>Particle</strong> — a basic example of Object-Oriented Programming in p5.js that demonstrated motion (<code>move()</code>) and visual representation (<code>display()</code>). The code was chaotic and adorable, but what intrigued me most was the invisible system beneath it: independent agents, each making tiny decisions, creating larger behavior when grouped.
-</p>
+        <h2>🪷 The Process</h2>
+       <p><strong>🪷 How the idea formed:</strong></p>
+<ul>
+  <li>Began with the <code>Particle</code> class example from our p5.js lesson (tiny circles bouncing and drawing connection lines)
+    <ul>
+      <li>This taught me key OOP structure: properties stored inside a class, movement updated in <code>update()</code>, visuals drawn in <code>display()</code></li>
+      <li>Even though it *looked chaotic*, the behavior was already a mini system—agents bouncing and reacting to boundaries</li>
+    </ul>
+  </li>
 
-<p>
-  Once I chose to remix it into a <strong>pond-crossing ecosystem inspired by Frogger mechanics</strong>, the circles evolved into real symbolic agents with *jobs to do*. I replaced one generic class with four intentionally structured ones:
-</p>
+  <li>For the homework, I wanted:
+    <ul>
+      <li>💛 Nostalgia</li>
+      <li>🎮 A system you could *play with*, not just observe</li>
+      <li>🌿 Independent agents following rules</li>
+      <li>🔥 Interactions that actually *change game outcomes*, not just draw lines</li>
+    </ul>
+  </li>
 
-<p>
-  <strong>Frog</strong> became my one brave player-controlled agent, moving between rows using grid-based position logic (<code>this.pos.y += dy * tileSize</code>) and resetting on failure (<code>reset()</code>). <strong>Car</strong> agents took over the road lanes, moving left or right using directional velocity (<code>this.pos.x += this.speed * this.direction</code>) and wrapping when they moved off screen (<code>if (this.pos.x > width) this.pos.x = -tileSize;</code>). <strong>Log</strong> agents drifted along the river rows, built to physically carry the frog across the water using a relational interaction check (<code>carries(frog)</code>) that updated the frog’s position when overlapped, proving the system elements could *affect each other*, not just exist next to each other.
-</p>
+  <li>Landed on a Frogger-inspired crossing system because it naturally expressed a system of relationships:
+    <ul>
+      <li>Cars = threats</li>
+      <li>Logs = moving platforms</li>
+      <li>Frog = the agent navigating risk</li>
+      <li>Pond zones = environmental system rules</li>
+    </ul>
+  </li>
+</ul>
 
-<p>
-  The <strong>Game</strong> class became the wise old pond architect — the controller that owns the frog, stores the arrays of cars and logs, reads UI input, and orchestrates interactions every frame. Each round is tracked internally using: <code>this.level++</code>, <code>this.difficulty += 0.25</code>, and a compounded speed multiplier (<code>car.update(this.trafficSpeed * difficulty)</code>). These stacked local rules generate emergent system behavior over time: once-spacious lanes tighten, timing becomes strategic, and the crossings feel less like a game and more like negotiating rush-hour over a lake.
-</p>
+<hr/>
 
-<p>
-  To make sure the system stayed interactive, I added both <strong>direct input control</strong> (arrow keys to hop the frog) and <strong>indirect system influence</strong> (a slider created in <code>setup()</code> using <code>createSlider()</code> to globally scale agent speed). Rather than creating new gameplay rules, I leaned into complexity by simply increasing system intensity each time the frog succeeds. Because movement speed compounds using <code>speedMultiplier = trafficSpeed * difficulty;</code> instead of fixed values, the pond evolves into increasingly unpredictable and difficult behavior patterns without breaking the core loop.
-</p>
+<p><strong>🐸 Building the system step-by-step:</strong></p>
+<ul>
+  <li><strong>1. Introduced the player agent</strong>
+    <ul>
+      <li>Wrote the <code>Frog</code> class, storing its start position using <code>createVector()</code></li>
+      <li>Movement controlled by arrow keys using <code>keyPressed()</code> → calling <code>frog.move(dx, dy)</code> in tile steps (<code>tileSize</code>)</li>
+      <li>Kept it from jumping off the visible system using <code>constrain()</code></li>
+    </ul>
+  </li>
 
-<p>
-  The last step was to pull the metaphor all the way through: if the code is a pond, the site should *feel* like one too. I built this webpage to document not only the system logic, but the personality of it — giant floating lily pads, a hopping frog agent looping over the pads, and gentle ripples pulsing in the background — all to visually match the layered relational system now living inside the sketch itself.
-</p>
+  <li><strong>2. Added road lanes</strong>
+    <ul>
+      <li>Created <code>Car</code> objects owned by <code>Game</code> inside randomized lanes</li>
+      <li>Car movement behavior was:
+        <code>this.pos.x += this.speed * this.direction * speedMultiplier;</code>
+      </li>
+      <li>Cars loop endlessly in the system using wrapping logic like:
+        <code>if (this.pos.x > width + tileSize) {...}</code>
+      </li>
+      <li>Cars affect the frog every frame using:
+        <code>if (car.hits(frog)) { frog.lives--; frog.reset(); }</code>
+      </li>
+    </ul>
+  </li>
 
-        </p>
+  <li><strong>3. Added river lanes</strong>
+    <ul>
+      <li>Created <code>Log</code> agents that share wrapping and movement behavior with cars, but interact differently</li>
+      <li>Logs *carry* the frog when overlapped:
+        <code>frog.pos.x += log.speed * log.direction * speedFactor;</code>
+      </li>
+      <li>If the frog reaches a river zone and isn't on a platform:
+        <code>if (!onLog && frog.pos.y < riverStart) {...}</code> → drowning state triggers <code>lives--</code>
+      </li>
+    </ul>
+  </li>
+
+  <li><strong>4. Intensified the system over time</strong>
+    <ul>
+      <li>Added difficulty ramp after each win:
+        <code>this.level++; this.difficulty += 0.25;</code>
+      </li>
+      <li>Applied a compounded speedMultiplier each frame:
+        <code>speedMultiplier = trafficSpeed * difficulty;</code>
+      </li>
+      <li>This made danger gaps and log timing windows tighten naturally from the same rules, without needing new logic</li>
+    </ul>
+  </li>
+</ul>
+
+<hr/>
+
+<p><strong>🎉 Finally added celebration feedback (so it actually feels like a *system shift*)</strong></p>
+<ul>
+  <li><strong>Confetti 🎊</strong>
+    <ul>
+      <li>Spawned using <code>ConfettiParticle</code> objects (size, velocity, rotation speed, lifetime stored internally)</li>
+      <li>Triggered on goal success by calling:
+        <code>triggerLevelCelebration(this.level);</code>
+      </li>
+      <li>Confetti moves per frame using:
+        <code>p5.Vector.fromAngle()</code> + <code>this.vel.y += 0.12;</code> (gravity ripple effect added after burst)</li>
+    </ul>
+  </li>
+
+  <li><strong>Level Banner UI 🛎️</strong>
+    <ul>
+      <li>Centered popup says <strong>LEVEL #</strong> when timer active</li>
+      <li>Timer enabled on success via:
+        <code>levelBannerTimer = LEVEL_BANNER_DURATION;</code>
+      </li>
+      <li>Banner drawn inside <code>draw()</code> using:
+        <code>text(`LEVEL ${game.level}`, width/2, height/2);</code>
+      </li>
+    </ul>
+  </li>
+
+  <li><strong>HUD Life System ♥</strong>
+    <ul>
+      <li>3 lives visualized as hearts each frame using:
+        <code>text("♥", 10 + i * 22, 8);</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<hr/>
+
+<p><strong>🌊 Why this meets the project requirement (but still stays fun and simple):</strong></p>
+<ul>
+  <li>Uses clear Object-Oriented design (classes own their own state, no global agent chaos)</li>
+  <li>Agents interact relationally:
+    <ul>
+      <li>Cars depend on speed multipliers</li>
+      <li>Frog depends on logs when in river rows</li>
+      <li>Game owns frog + cars + logs and orchestrates interactions every frame</li>
+    </ul>
+  </li>
+  <li>Emergent properties exist:
+    <ul>
+      <li>Timing windows get tighter</li>
+      <li>Safe gaps shrink</li>
+      <li>Lane patterns vary due to <code>random()</code></li>
+      <li>Difficulty increases are an *intensity shift* from the same rule set</li>
+    </ul>
+  </li>
+</ul>
+
+
+
       </div>
     </section>
 
